@@ -3,28 +3,50 @@ import Formulary from "./global/form";
 import LOGO from "../Assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
+import { ThreeDots } from 'react-loader-spinner'
+
 
 export default function Home() {
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login';
 
     function login(e) {
         e.preventDefault();
-        if (email.length > 10 && password.length >= 6) {
-            navigate('/habitos');
-        }else{
-            alert('Campo email, ou senha incorreto.')
-        }
+        const userData = {email: email, password: password};
+        setLoading(true);
+        axios.post(URL, userData).then(response => navigate('/habitos'));
+        axios.post(URL, userData).catch(err => {
+            alert(err.response.data.message);
+            setLoading(false);
+        });
     }
 
     return (
         <Body>
             <img src={LOGO} alt="Logo" />
-            <Formulary className="login" onSubmit={login}>
-                <input placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} type='email' />
-                <input placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
-                <button type="submit" className="blue">Entrar</button>
+            <Formulary className="login" opacity={loading ? '0.8' : '1'} onSubmit={login}>
+                <input disabled={loading ? 'disabled' : null} placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} type='email' />
+                <input disabled={loading ? 'disabled' : null} placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
+                <button disabled={loading ? 'disabled' : null}  type="submit" className="blue">
+                {loading ? (
+                        <ThreeDots
+                            height="80"
+                            width="80"
+                            radius="9"
+                            color="#FFFFFF"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    ) : (
+                        'Entrar'
+                    )}
+                </button>
             </Formulary>
             <Link to={'/cadastro'}>Não tem uma conta? Cadastre-se!</Link>
         </Body>

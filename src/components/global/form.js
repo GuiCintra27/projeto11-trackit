@@ -6,6 +6,7 @@ const Formulary = styled.form`
     display: flex;
     flex-direction: column;
     gap: .6rem;
+    opacity: ${props => props.opacity};
 
     input{
         width: 100%;
