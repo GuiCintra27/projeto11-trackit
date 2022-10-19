@@ -1,17 +1,16 @@
 import styled from "styled-components";
-import Footer from "./footer";
-import Header from "./header";
+import Footer from "../global/footer";
+import Header from "../global/header";
 import addictIcon from "../../Assets/addictIcon.svg"
-import Formulary from "../form";
+import Formulary from "../global/form";
 import Day from "./day";
 import { useState } from "react";
 import HabitCard from "./habitCard";
 
-export default function Habits() {
+export default function Habits({userHabits, setUserHabits, percentage}) {
     const [habitName, setHabitName] = useState('');
     const [habitDays, setHabitDays] = useState([]);
     const [newHabit, setNewHabit] = useState(false);
-    const [userHabits, setUserHabits] = useState([]);
     const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
     function addHabit() {
@@ -23,14 +22,22 @@ export default function Habits() {
     function saveHabit(e) {
         e.preventDefault();
 
-        setUserHabits([
-            ...userHabits,
-            {
-                name: habitName,
-                days: [...habitDays]
+        if(habitName.length > 3 && habitDays.length > 0){
+            setUserHabits([
+                ...userHabits,
+                {
+                    name: habitName,
+                    days: [...habitDays]
+                }
+            ]);
+            addHabit();
+        }else{
+            if(habitName.length <= 3 ){
+                alert('Nome do hábito curto demais')
+            }else{
+                alert('Preencha pelo menos um dia da semana');
             }
-        ]);
-        addHabit();
+        }
     }
 
     return (
@@ -73,7 +80,7 @@ export default function Habits() {
                 ))
                 :
                 <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>}
-            <Footer />
+            <Footer percentage={percentage} />
         </Body>
     );
 }

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Formulary from "./form";
+import Formulary from "./global/form";
 import LOGO from "../Assets/logo.svg";
 import { Link } from "react-router-dom";
 

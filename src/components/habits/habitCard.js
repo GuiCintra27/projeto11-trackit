@@ -8,7 +8,7 @@ export default function HabitCard({ name, weekdays, habitDays }) {
             <h1>{name}</h1>
             <div className="weekDay">
                 {weekdays.map((day, index) => (
-                    <div className={`day` + (habitDays.includes(index) ? ' check' : '')}>{day}</div>
+                    <div key={index} className={`day` + (habitDays.includes(index) ? ' check' : '')}>{day}</div>
                 ))}
             </div>
         </Card>

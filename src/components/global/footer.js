@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useState } from "react";
 
 // Import react-circular-progressbar module and styles
 import {
@@ -12,23 +11,13 @@ import "react-circular-progressbar/dist/styles.css";
 // Animation
 import ChangingProgressProvider from "./ChangingProgressProvider";
 
-
-export default function Footer() {
-    const [test, setTest] = useState([0]);
-
-    function change() {
-        setTest([...test, 80]);
-        setInterval(() => {
-            setTest([80]);
-        }, 1500);
-    }
-
+export default function Footer({ percentage = 0 }) {
     return (
         <Menu>
             <Link to={'/habitos'}>Hábitos</Link>
-            <div className="progressBar" onClick={change}>
+            <div className="progressBar">
                 <Link to={'/hoje'}>
-                    <ChangingProgressProvider values={[...test]}>
+                    <ChangingProgressProvider values={[percentage]}>
                         {(test) => {
                             return (
                                 <CircularProgressbar
@@ -48,7 +37,7 @@ export default function Footer() {
                     </ChangingProgressProvider>
                 </Link>
             </div>
-            <Link>Histórico</Link>
+            <Link to={'/historico'}>Histórico</Link>
         </Menu>
     );
 }

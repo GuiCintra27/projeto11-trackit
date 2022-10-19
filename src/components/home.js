@@ -1,22 +1,29 @@
 import styled from "styled-components";
-import Formulary from "./form";
+import Formulary from "./global/form";
 import LOGO from "../Assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-export default function Home(){
+export default function Home() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    
-    function login(e){
+
+    function login(e) {
         e.preventDefault();
-        navigate('/habitos');
+        if (email.length > 10 && password.length >= 6) {
+            navigate('/habitos');
+        }else{
+            alert('Campo email, ou senha incorreto.')
+        }
     }
 
-    return(
+    return (
         <Body>
             <img src={LOGO} alt="Logo" />
             <Formulary className="login" onSubmit={login}>
-                <input placeholder="email" type='email' />
-                <input placeholder="senha" type='password' />
+                <input placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} type='email' />
+                <input placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
                 <button type="submit" className="blue">Entrar</button>
             </Formulary>
             <Link to={'/cadastro'}>Não tem uma conta? Cadastre-se!</Link>

@@ -4,7 +4,18 @@ export default function Day({weekday, habitDays, setHabitDays, index}){
     const [isCheck, setIsCheck] = useState(false);
     function check(){
         setIsCheck(!isCheck);
-        setHabitDays([...habitDays, index]);
+        if (!habitDays.includes(index)){
+            setHabitDays([...habitDays, index]);
+        }else{
+            const daysList = habitDays.filter((item) =>{
+                if (item !== index){
+                    return item;
+                }else{
+                    return false;
+                }
+            })
+            setHabitDays([...daysList]);
+        }
     }
 
     return (
