@@ -2,14 +2,17 @@ import axios from "axios";
 import styled from "styled-components";
 import trashIcon from "../../Assets/trashIcon.svg";
 
-export default function HabitCard({ header, getHabit, id, name, weekdays, habitDays }) {
+export default function HabitCard({ header, getHabit, id, name, weekdays, habitDays, calcPercentage }) {
     const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`;
 
     function trash() {
         const del = window.confirm('Deseja deletar o hábito?');
 
         if (del === true) {
-            axios.delete(URL, header).then(response => getHabit());
+            axios.delete(URL, header).then(response => {
+                getHabit();
+                calcPercentage();
+            });
         }
     }
 

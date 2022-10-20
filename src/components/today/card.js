@@ -1,36 +1,35 @@
-import { useState } from "react";
+import axios from "axios";
 import styled from "styled-components";
 import checkIcon from "../../Assets/checkIcon.svg";
 
-export default function Card({ cardName, total, setPercentage, completedHabits, setCompletedHabits, index }) {
-    const [checkBg, setCheckBg] = useState('var(--mediumGray)');
+export default function Card({ id, header, isDone, getHabits, cardName, currentSequence, highestSequence, calcPercentage }) {
+    const postURL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`;
+    const deleteURL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`;
 
     function check() {
-        if (!completedHabits.id.includes(index)) {
-            let completed = completedHabits.completed + 1;
-            setCheckBg('var(--completedHabit)');
-            setPercentage(((completed / total) * 100).toFixed(0));
-            setCompletedHabits({id: [...completedHabits.id, index], completed: completed});
-        }else{
-            let completed = completedHabits.completed - 1;
-            let ids = completedHabits.id.map((item) =>{
-                if(item === index){
-                    return false;
-                }
-                return item;
-            })
-            setCheckBg('var(--mediumGray)');
-            setPercentage(((completed / total) * 100).toFixed(0));
-            setCompletedHabits({id: [...ids], completed: completed});
+        if (!isDone) {
+            axios.post(postURL, '', header)
+                .then(response => {
+                    calcPercentage();
+                    getHabits();
+                })
+                .catch(err => alert(err.response.data.message));
+        } else {
+            axios.post(deleteURL, '', header)
+                .then(response => {
+                    calcPercentage();
+                    getHabits();
+                })
+                .catch(err => alert(err.response.data.message));
         }
     }
 
     return (
-        <CardInformations color={checkBg} onClick={check}>
+        <CardInformations color={isDone ? 'var(--completedHabit)' : 'var(--mediumGray)'} onClick={check}>
             <div className="cardInformations">
                 <h1>{cardName}</h1>
-                <p>Sequência atual: 3 dias</p>
-                <p>Seu recorde: 5 dias</p>
+                <p>Sequência atual: <span className={isDone ? 'green' : null}>{currentSequence} dias</span></p>
+                <p>Seu recorde: <span className={currentSequence === highestSequence ? 'green' : null}>{highestSequence} dias</span></p>
             </div>
             <div className="check">
                 <img src={checkIcon} alt='Marcar como concluído' />
@@ -80,5 +79,9 @@ const CardInformations = styled.div`
             width: 3.5rem;
             height: 2.8rem;
         }
+    }
+
+    .green{
+        color: var(--completedHabit);
     }
 `;

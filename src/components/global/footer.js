@@ -13,8 +13,8 @@ import "react-circular-progressbar/dist/styles.css";
 // Animation
 import ChangingProgressProvider from "./ChangingProgressProvider";
 
-export default function Footer({ percentage = 0 }) {
-    const { TOKEN } = useContext(UserContext);
+export default function Footer() {
+    const { percentage } = useContext(UserContext);
 
     return (
         <Menu>

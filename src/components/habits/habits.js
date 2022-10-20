@@ -11,17 +11,18 @@ import UserContext from "../dataContext";
 import axios from "axios";
 import { ThreeDots } from 'react-loader-spinner'
 
-export default function Habits({ percentage }) {
+export default function Habits() {
     const [userHabits, setUserHabits] = useState([]);
     const [habitName, setHabitName] = useState('');
     const [habitDays, setHabitDays] = useState([]);
     const [newHabit, setNewHabit] = useState(false);
     const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-    const { TOKEN } = useContext(UserContext);
+    const { calcPercentage, TOKEN } = useContext(UserContext);
     const postURL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits';
     const getURL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits';
     const header = { headers: { "Authorization": `Bearer ${TOKEN}` } };
     const [loading, setLoading] = useState(false);
+    const [card, setCard] = useState({ name: '', days: [] });
 
     function getHabit() {
         axios.get(getURL, header).then((response) => {
@@ -36,12 +37,25 @@ export default function Habits({ percentage }) {
         getHabit();
     }, []);
 
-    function addHabit() {
+    function addHabit(reset = false) {
         setNewHabit(!newHabit);
         setLoading(false);
-        setHabitName('');
-        setHabitDays([]);
         getHabit();
+
+        if(reset === true){
+            setHabitName('');
+            setHabitDays([]);
+            calcPercentage();
+        }else{
+            setCard({ name: '', days: [] });
+            setHabitName(card.name);
+            setHabitDays([...card.days]);
+        }
+    }
+
+    function cancel() {
+        setCard({ name: habitName, days: [...habitDays] });
+        setNewHabit(!newHabit);
     }
 
     function saveHabit(e) {
@@ -50,9 +64,9 @@ export default function Habits({ percentage }) {
 
         if (habitName.length > 3 && habitDays.length > 0) {
             axios.post(postURL, { name: habitName, days: [...habitDays] }, header)
-                .then(response => addHabit())
-                .catch(response => {
-                    console.log(response);
+                .then(response => addHabit(true))
+                .catch(err => {
+                    alert(err.response.data.message);
                     setLoading(false);
                 });
         } else {
@@ -92,7 +106,7 @@ export default function Habits({ percentage }) {
                                     </div>
 
                                     <div className="habitsButtons">
-                                        <button disabled={loading ? 'disabled' : null} className="white habits" type="button" onClick={() => setNewHabit(!newHabit)}>Cancelar</button>
+                                        <button disabled={loading ? 'disabled' : null} className="white habits" type="button" onClick={cancel}>Cancelar</button>
                                         <button disabled={loading ? 'disabled' : null} className="blue habits" type="submit">
                                             {loading ? (
                                                 <ThreeDots
@@ -119,13 +133,13 @@ export default function Habits({ percentage }) {
                 </MyHabits>
                 {userHabits.length > 0 ?
                     userHabits.map((item, index) => (
-                        <HabitCard key={index} header={header} getHabit={getHabit} id={item.id} name={item.name} weekdays={weekdays} habitDays={item.days} />
+                        <HabitCard key={index} header={header} getHabit={getHabit} id={item.id} name={item.name} weekdays={weekdays} habitDays={item.days} calcPercentage={calcPercentage} />
                     ))
                     :
                     <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
                 }
             </Body>
-            <Footer percentage={percentage} />
+            <Footer />
         </>
     );
 }

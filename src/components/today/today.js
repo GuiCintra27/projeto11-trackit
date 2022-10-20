@@ -2,34 +2,42 @@ import Footer from "../global/footer";
 import Header from "../global/header";
 import styled from "styled-components";
 import Card from "./card";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import UserContext from "../dataContext";
 
-export default function Today({ percentage, setPercentage }) {
-    const userHabits = [];
-    const [completedHabits, setCompletedHabits] = useState({ id: [], completed: 0 });
+export default function Today() {
+    const dayjs = require('dayjs');
+    const [userHabits, setUserHabits] = useState([]);
     const URL = ('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today');
-    const { TOKEN } = useContext(UserContext);
+    const { percentage, calcPercentage, TOKEN } = useContext(UserContext);
     const header = {headers : {"Authorization" : `Bearer ${TOKEN}`}};
+    const weekdays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
-    axios.get(URL, header).then();
-    axios.get(URL, header).catch(response => console.log(response));
+    function getHabits(){
+        axios.get(URL, header).then(response => setUserHabits([...response.data]));
+        axios.get(URL, header).catch(response => console.log(response));
+    }
+
+    useEffect(() =>{
+        getHabits();
+        calcPercentage();
+    },[]);
 
     return (
         <Body>
             <Header />
 
             <MyHabits>
-                <h1>Quarta, 19/10</h1>
-                <p className="subtitle">Nenhum hábito concluído ainda</p>
+                <h1>{weekdays[dayjs().day()]}, {dayjs().format('DD/MM')}</h1>
+                <p className={percentage == 0 ? 'unDone' : 'done'}>{percentage == 0 ? 'Nenhum hábito concluído ainda' : `${percentage}% dos hábitos concluídos`}</p>
             </MyHabits>
 
             {userHabits.map((item, index) => (
-                <Card key={index} cardName={item.name} total={userHabits.length} setPercentage={setPercentage} completedHabits={completedHabits} setCompletedHabits={setCompletedHabits} index={index} />
+                <Card key={index} id={item.id} header={header} isDone={item.done} getHabits={getHabits} cardName={item.name} currentSequence={item.currentSequence} highestSequence={item.highestSequence} calcPercentage={calcPercentage} />
             ))}
 
-            <Footer percentage={percentage} />
+            <Footer />
         </Body>
     );
 }
@@ -41,8 +49,13 @@ const Body = styled.div`
     padding: 9.2rem 1.7rem 10rem 1.7rem;
     color: var(--darkGray);
 
-    & > div > p.subtitle{
-      font-size: 18px;
+    p.done{
+        font-size: 18px;
+        color: var(--completedHabit);
+    }
+
+    p.unDone{
+        font-size: 18px;
       color: var(--defaultSubtitle);
     }
 `;
