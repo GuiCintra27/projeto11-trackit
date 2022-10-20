@@ -1,10 +1,14 @@
 import styled from "styled-components";
+import { useContext } from "react";
+import UserContext from "../dataContext";
 
-export default function Header(){
+export default function Header() {
+    const { perfilImg } = useContext(UserContext);
+
     return (
         <PageHeader>
             <h1>TrackIt</h1>
-            <img src="https://akamai.sscdn.co/letras/215x215/fotos/f/b/e/7/fbe7f6e0f613d2121a31a68fdd7963cf.jpg" alt="Imagem de usuário" />
+            <img src={perfilImg} alt="Imagem de usuário" />
         </PageHeader>
     )
 }

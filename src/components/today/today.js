@@ -2,10 +2,19 @@ import Footer from "../global/footer";
 import Header from "../global/header";
 import styled from "styled-components";
 import Card from "./card";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import axios from "axios";
+import UserContext from "../dataContext";
 
-export default function Today({ userHabits, percentage ,setPercentage }) {
-    const [completedHabits, setCompletedHabits] = useState({id: [], completed: 0});
+export default function Today({ percentage, setPercentage }) {
+    const userHabits = [];
+    const [completedHabits, setCompletedHabits] = useState({ id: [], completed: 0 });
+    const URL = ('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today');
+    const { TOKEN } = useContext(UserContext);
+    const header = {headers : {"Authorization" : `Bearer ${TOKEN}`}};
+
+    axios.get(URL, header).then();
+    axios.get(URL, header).catch(response => console.log(response));
 
     return (
         <Body>

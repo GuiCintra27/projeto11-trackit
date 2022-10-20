@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useContext } from "react";
+import UserContext from "../dataContext";
 
 // Import react-circular-progressbar module and styles
 import {
@@ -12,9 +14,11 @@ import "react-circular-progressbar/dist/styles.css";
 import ChangingProgressProvider from "./ChangingProgressProvider";
 
 export default function Footer({ percentage = 0 }) {
+    const { TOKEN } = useContext(UserContext);
+
     return (
         <Menu>
-            <Link to={'/habitos'}>Hábitos</Link>
+            <Link to={"/habitos"}>Hábitos</Link>
             <div className="progressBar">
                 <Link to={'/hoje'}>
                     <ChangingProgressProvider values={[percentage]}>

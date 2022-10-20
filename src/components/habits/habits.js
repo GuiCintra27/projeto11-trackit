@@ -4,93 +4,140 @@ import Header from "../global/header";
 import addictIcon from "../../Assets/addictIcon.svg"
 import Formulary from "../global/form";
 import Day from "./day";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HabitCard from "./habitCard";
+import { useContext } from "react";
+import UserContext from "../dataContext";
+import axios from "axios";
+import { ThreeDots } from 'react-loader-spinner'
 
-export default function Habits({userHabits, setUserHabits, percentage}) {
+export default function Habits({ percentage }) {
+    const [userHabits, setUserHabits] = useState([]);
     const [habitName, setHabitName] = useState('');
     const [habitDays, setHabitDays] = useState([]);
     const [newHabit, setNewHabit] = useState(false);
     const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+    const { TOKEN } = useContext(UserContext);
+    const postURL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits';
+    const getURL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits';
+    const header = { headers: { "Authorization": `Bearer ${TOKEN}` } };
+    const [loading, setLoading] = useState(false);
+
+    function getHabit() {
+        axios.get(getURL, header).then((response) => {
+            setUserHabits([...response.data])
+        });
+        axios.get(getURL, header).catch((response) => {
+            setUserHabits([...response.data])
+        });
+    }
+
+    useEffect(() => {
+        getHabit();
+    }, []);
 
     function addHabit() {
         setNewHabit(!newHabit);
+        setLoading(false);
         setHabitName('');
         setHabitDays([]);
+        getHabit();
     }
 
     function saveHabit(e) {
         e.preventDefault();
+        setLoading(true);
 
-        if(habitName.length > 3 && habitDays.length > 0){
-            setUserHabits([
-                ...userHabits,
-                {
-                    name: habitName,
-                    days: [...habitDays]
-                }
-            ]);
-            addHabit();
-        }else{
-            if(habitName.length <= 3 ){
+        if (habitName.length > 3 && habitDays.length > 0) {
+            axios.post(postURL, { name: habitName, days: [...habitDays] }, header)
+                .then(response => addHabit())
+                .catch(response => {
+                    console.log(response);
+                    setLoading(false);
+                });
+        } else {
+            if (habitName.length <= 3) {
                 alert('Nome do hábito curto demais')
-            }else{
+            } else {
                 alert('Preencha pelo menos um dia da semana');
             }
+            setLoading(false);
         }
     }
 
     return (
-        <Body>
+        <>
             <Header />
-            <MyHabits>
-                <div className="menu">
-                    <h1>Meus hábitos</h1>
-                    <button onClick={addHabit}>
-                        <img src={addictIcon} alt='Adicionar novo hábito' />
-                    </button>
-                </div>
+            <Body>
+                <MyHabits>
+                    <div className="menu">
+                        <h1>Meus hábitos</h1>
+                        <button onClick={addHabit}>
+                            <img src={addictIcon} alt='Adicionar novo hábito' />
+                        </button>
+                    </div>
+                    {
+                        newHabit ? (
+                            <CreateHabit>
+                                <Formulary onSubmit={saveHabit} opacity={loading ? '0.8' : '1'}>
+                                    <input
+                                        disabled={loading ? 'disabled' : null}
+                                        placeholder="nome do hábito"
+                                        onChange={(e) => setHabitName(e.target.value)}
+                                        value={habitName}
+                                        type='text'
+                                    />
+                                    <div className="weekDay">
+                                        {weekdays.map((weekday, index) => <Day key={index} loading={loading} weekday={weekday} habitDays={habitDays} setHabitDays={setHabitDays} index={index} />)}
+                                    </div>
 
-                {newHabit ? (
-                    <CreateHabit>
-                        <Formulary onSubmit={saveHabit}>
-                            <input
-                                placeholder="nome do hábito"
-                                onChange={(e) => setHabitName(e.target.value)}
-                                value={habitName}
-                                type='text' />
-
-                            <div className="weekDay">
-                                {weekdays.map((weekday, index) => <Day key={index} weekday={weekday} habitDays={habitDays} setHabitDays={setHabitDays} index={index} />)}
-                            </div>
-
-                            <div className="habitsButtons">
-                                <button className="white habits" onClick={addHabit}>Cancelar</button>
-                                <button className="blue habits" type="submit">Salvar</button>
-                            </div>
-                        </Formulary>
-                    </CreateHabit>
-                ) : (
-                    null
-                )}
-            </MyHabits>
-            {userHabits.length > 0 ?
-                userHabits.map((item, index) => (
-                    <HabitCard key={index} name={item.name} weekdays={weekdays} habitDays={item.days} />
-                ))
-                :
-                <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>}
+                                    <div className="habitsButtons">
+                                        <button disabled={loading ? 'disabled' : null} className="white habits" type="button" onClick={() => setNewHabit(!newHabit)}>Cancelar</button>
+                                        <button disabled={loading ? 'disabled' : null} className="blue habits" type="submit">
+                                            {loading ? (
+                                                <ThreeDots
+                                                    height="40"
+                                                    width="40"
+                                                    radius="9"
+                                                    color="#FFFFFF"
+                                                    ariaLabel="three-dots-loading"
+                                                    wrapperStyle={{}}
+                                                    wrapperClassName=""
+                                                    visible={true}
+                                                />
+                                            ) : (
+                                                'Salvar'
+                                            )}
+                                        </button>
+                                    </div>
+                                </Formulary>
+                            </CreateHabit>
+                        ) : (
+                            null
+                        )
+                    }
+                </MyHabits>
+                {userHabits.length > 0 ?
+                    userHabits.map((item, index) => (
+                        <HabitCard key={index} header={header} getHabit={getHabit} id={item.id} name={item.name} weekdays={weekdays} habitDays={item.days} />
+                    ))
+                    :
+                    <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
+                }
+            </Body>
             <Footer percentage={percentage} />
-        </Body>
+        </>
     );
 }
 
 const Body = styled.div`
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 19.2rem);
     position: relative;
-    padding: 9.2rem 1.7rem 10rem 1.7rem;
+    margin: 9.2rem 0 10rem 0;
+    padding: 0 1.7rem 0 1.7rem;
     color: var(--darkGray);
+    overflow-y: scroll;
 
     &>p{
       font-size: 18px;

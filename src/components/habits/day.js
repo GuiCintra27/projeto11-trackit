@@ -1,16 +1,16 @@
 import { useState } from "react";
 
-export default function Day({weekday, habitDays, setHabitDays, index}){
+export default function Day({ loading, weekday, habitDays, setHabitDays, index }) {
     const [isCheck, setIsCheck] = useState(false);
-    function check(){
+    function check() {
         setIsCheck(!isCheck);
-        if (!habitDays.includes(index)){
+        if (!habitDays.includes(index)) {
             setHabitDays([...habitDays, index]);
-        }else{
-            const daysList = habitDays.filter((item) =>{
-                if (item !== index){
+        } else {
+            const daysList = habitDays.filter((item) => {
+                if (item !== index) {
                     return item;
-                }else{
+                } else {
                     return false;
                 }
             })
@@ -19,6 +19,6 @@ export default function Day({weekday, habitDays, setHabitDays, index}){
     }
 
     return (
-        <div className={`day` + (isCheck ? ' check' : '')} onClick={check}>{weekday}</div>
+        <div disabled={loading ? 'disabled' : null} className={`day` + (isCheck ? ' check' : '')} onClick={check}>{weekday}</div>
     );
 }

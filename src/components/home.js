@@ -5,9 +5,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { ThreeDots } from 'react-loader-spinner'
-
+import { useContext } from "react";
+import UserContext from "./dataContext";
 
 export default function Home() {
+    const { setPerfilImg, setTOKEN } = useContext(UserContext);
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,9 +18,13 @@ export default function Home() {
 
     function login(e) {
         e.preventDefault();
-        const userData = {email: email, password: password};
+        const userData = { email: email, password: password };
         setLoading(true);
-        axios.post(URL, userData).then(response => navigate('/habitos'));
+        axios.post(URL, userData).then(response => {
+            setPerfilImg(response.data.image);
+            setTOKEN(response.data.token);
+            navigate("/hoje");
+        });
         axios.post(URL, userData).catch(err => {
             alert(err.response.data.message);
             setLoading(false);
@@ -31,8 +37,8 @@ export default function Home() {
             <Formulary className="login" opacity={loading ? '0.8' : '1'} onSubmit={login}>
                 <input disabled={loading ? 'disabled' : null} placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} type='email' />
                 <input disabled={loading ? 'disabled' : null} placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
-                <button disabled={loading ? 'disabled' : null}  type="submit" className="blue">
-                {loading ? (
+                <button disabled={loading ? 'disabled' : null} type="submit" className="blue">
+                    {loading ? (
                         <ThreeDots
                             height="80"
                             width="80"

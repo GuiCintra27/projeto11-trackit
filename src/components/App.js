@@ -6,23 +6,25 @@ import Home from "./home";
 import SingUp from "./singUp";
 import Today from "./today/today";
 import History from "./history/history";
+import { UserProvider } from "./dataContext";
 
 export default function App() {
-    const [userHabits, setUserHabits] = useState([]);
     const [percentage, setPercentage] = useState(0);
 
     return (
         <>
             <GlobalStyle />
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/cadastro" element={<SingUp />} />
-                    <Route path="/habitos" element={<Habits userHabits={userHabits} setUserHabits={setUserHabits} percentage={percentage} />} />
-                    <Route path="/hoje" element={<Today userHabits={userHabits} percentage={percentage} setPercentage={setPercentage} />} />
-                    <Route path="/historico" element={<History />} />
-                </Routes>
-            </BrowserRouter>
+            <UserProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/cadastro" element={<SingUp />} />
+                        <Route path="/habitos" element={<Habits percentage={percentage} />} />
+                        <Route path="/hoje" element={<Today percentage={percentage} setPercentage={setPercentage} />} />
+                        <Route path="/historico" element={<History />} />
+                    </Routes>
+                </BrowserRouter>
+            </UserProvider>
         </>
     );
 }
