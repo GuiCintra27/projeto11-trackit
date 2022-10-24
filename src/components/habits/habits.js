@@ -145,7 +145,7 @@ export default function Habits() {
 }
 
 const CreateHabit = styled.div`
-    width: 34rem;
+    width: clamp(100%, 100%, 34rem);
     height: 18rem;
     background-color: var(--white);
     border-radius: 5px;
