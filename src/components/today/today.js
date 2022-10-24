@@ -11,18 +11,18 @@ export default function Today() {
     const [userHabits, setUserHabits] = useState([]);
     const URL = ('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today');
     const { percentage, calcPercentage, TOKEN } = useContext(UserContext);
-    const header = {headers : {"Authorization" : `Bearer ${TOKEN}`}};
+    const header = { headers: { "Authorization": `Bearer ${TOKEN}` } };
     const weekdays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
-    function getHabits(){
+    function getHabits() {
         axios.get(URL, header).then(response => setUserHabits([...response.data]));
         axios.get(URL, header).catch(response => console.log(response));
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         getHabits();
         calcPercentage();
-    },[]);
+    }, []);
 
     return (
         <Body>
@@ -30,7 +30,7 @@ export default function Today() {
 
             <MyHabits>
                 <h1>{weekdays[dayjs().day()]}, {dayjs().format('DD/MM')}</h1>
-                <p className={percentage == 0 ? 'unDone' : 'done'}>{percentage == 0 ? 'Nenhum hábito concluído ainda' : `${percentage}% dos hábitos concluídos`}</p>
+                <p className={Number(percentage) === 0 ? 'unDone' : 'done'}>{Number(percentage) === 0 ? 'Nenhum hábito concluído ainda' : `${percentage}% dos hábitos concluídos`}</p>
             </MyHabits>
 
             {userHabits.map((item, index) => (

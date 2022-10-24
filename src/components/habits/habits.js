@@ -146,10 +146,10 @@ export default function Habits() {
 
 const Body = styled.div`
     width: 100vw;
-    height: calc(100vh - 19.2rem);
+    height: calc(72vh);
     position: relative;
-    margin: 9.2rem 0 10rem 0;
-    padding: 0 1.7rem 0 1.7rem;
+    margin: 9.2rem 0 0 0;
+    padding: 0 1.7rem 1rem 1.7rem;
     color: var(--darkGray);
     overflow-y: scroll;
 

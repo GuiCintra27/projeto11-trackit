@@ -8,18 +8,22 @@ export function UserProvider({ children }) {
     const [percentage, setPercentage] = useState(0);
     const [perfilImg, setPerfilImg] = useState('');
     const [TOKEN, setTOKEN] = useState('');
-    const header = {headers : {"Authorization" : `Bearer ${TOKEN}`}};
+    const header = { headers: { "Authorization": `Bearer ${TOKEN}` } };
 
     function calcPercentage() {
         axios.get(URL, header).then(response => {
             const total = [...response.data];
             const completed = total.filter((item) => {
-                if (item.done){
+                if (item.done) {
                     return true
                 }
                 return false
-            })
-            setPercentage(((completed.length / total.length) * 100).toFixed(0));
+            });
+            if (total.length === 0) {
+                setPercentage(0)
+            } else {
+                setPercentage(((completed.length / total.length) * 100).toFixed(0));
+            }
         });
         axios.get(URL, header).catch(response => console.log(response));
     }
