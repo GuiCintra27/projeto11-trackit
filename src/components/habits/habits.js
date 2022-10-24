@@ -17,7 +17,7 @@ export default function Habits() {
     const [habitDays, setHabitDays] = useState([]);
     const [newHabit, setNewHabit] = useState(false);
     const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-    const { calcPercentage, TOKEN } = useContext(UserContext);
+    const { calcPercentage, TOKEN, Body, MyHabits } = useContext(UserContext);
     const postURL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits';
     const getURL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits';
     const header = { headers: { "Authorization": `Bearer ${TOKEN}` } };
@@ -82,7 +82,7 @@ export default function Habits() {
     return (
         <>
             <Header />
-            <Body>
+            <Body height={'75vh'}>
                 <MyHabits>
                     <div className="menu">
                         <h1>Meus hábitos</h1>
@@ -143,54 +143,6 @@ export default function Habits() {
         </>
     );
 }
-
-const Body = styled.div`
-    width: 100vw;
-    height: calc(72vh);
-    position: relative;
-    margin: 9.2rem 0 0 0;
-    padding: 0 1.7rem 1rem 1.7rem;
-    color: var(--darkGray);
-    overflow-y: scroll;
-
-    &>p{
-      font-size: 18px;
-    }
-`;
-
-const MyHabits = styled.div`
-    width: 100%;
-    margin-bottom: 2.8rem;
-
-    div.menu{
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 2.8rem;
-    }
-    
-    h1{
-        font-weight: 400;
-        font-size: 23px;
-        color: var(--darkBlue);
-    }
-
-    button{
-        width: 4rem;
-        height: 3.5rem;
-        background-color: var(--lightBlue);
-        border: none;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        img{
-            width: 1.6rem;
-        }
-    }
-`;
 
 const CreateHabit = styled.div`
     width: 34rem;
