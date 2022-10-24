@@ -26,7 +26,7 @@ export default function Today() {
     return (
         <>
             <Header />
-            <Body height={'100'}>
+            <Body height={'72vh'}>
 
                 <MyHabits>
                     <h1>{weekdays[dayjs().day()]}, {dayjs().format('DD/MM')}</h1>
