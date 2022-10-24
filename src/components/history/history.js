@@ -9,7 +9,7 @@ export default function History() {
     return (
         <>
             <Header />
-            <Body height={'100vh'}>
+            <Body height={'72vh'}>
 
                 <MyHabits>
                     <h1>Histórico</h1>
