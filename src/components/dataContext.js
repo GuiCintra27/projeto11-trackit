@@ -37,11 +37,12 @@ export function UserProvider({ children }) {
 }
 
 const Body = styled.div`
-    width: 100%;
+    width: calc(100vw - 4rem);
     height: ${props => props.height};
     position: relative;
-    margin: 9.2rem 0 0 0;
-    padding: 0 1.7rem 3rem 1.7rem;
+    margin-top: 9.2rem;
+    margin-inline: auto;
+    padding: 0 0 3rem 0;
     color: var(--darkGray);
     overflow-y: scroll;
 
