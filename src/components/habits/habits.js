@@ -149,5 +149,5 @@ const CreateHabit = styled.div`
     height: 18rem;
     background-color: var(--white);
     border-radius: 5px;
-    padding: 1.8rem;
+    padding: 1.8rem auto 1.8rem auto;
 `;
