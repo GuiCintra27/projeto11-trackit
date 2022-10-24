@@ -40,7 +40,7 @@ export default function Card({ id, header, isDone, getHabits, cardName, currentS
 
 
 const CardInformations = styled.div`
-    width: 34rem;
+    width: clamp(100%, 100%, 34rem);
     height: 9.5rem;
     background-color: var(--white);
     position: relative;
