@@ -30,7 +30,7 @@ export default function HabitCard({ header, getHabit, id, name, weekdays, habitD
 }
 
 const Card = styled.div`
-    width: 34rem;
+    width: clamp(100%, 100%, 34rem);
     height: 9rem;
     background-color: var(--white);
     position: relative;
