@@ -37,7 +37,7 @@ export function UserProvider({ children }) {
 }
 
 const Body = styled.div`
-    width: 100vw;
+    width: 100%;
     height: ${props => props.height};
     position: relative;
     margin: 9.2rem 0 0 0;
